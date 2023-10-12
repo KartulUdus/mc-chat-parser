@@ -1,9 +1,7 @@
 require('dotenv').config()
-const Docker = require('dockerode')
-const docker = new Docker()
-const container = docker.getContainer(process.env.DOCKER_CONTAINER_NAME)
 const { Client, Events, Partials, GatewayIntentBits } = require('discord.js')
 const TailFile = require('@logdna/tail-file')
+const Rcon = require('rcon-client')
 
 const client = new Client({ 	
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -12,8 +10,7 @@ const client = new Client({
 let parseDocker = false
 
 const readDockerLogs = () => {
-	new TailFile('/data/logs/server.log', {encoding: 'utf8'})
-  .on('data', (logOutput) => {
+	new TailFile('/latest.log', {encoding: 'utf8'}).on('data', (logOutput) => {
 		if(logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
 			const message = logOutput.substring(logOutput.indexOf('>') + 1)
 			const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
@@ -41,22 +38,32 @@ const readDockerLogs = () => {
   })
 }
 
- const main = () => {
+const main = async () => {
 	readDockerLogs(client)
 	client.once(Events.ClientReady, c => {
 		console.log(`Ready! Logged in as ${c.user.tag}`)
 		parseDocker = true
 	})
-	client.login(process.env.DISCORD_TOKEN)
+	await client.login(process.env.DISCORD_TOKEN)
+
+	const rcon = await Rcon.Rcon.connect({
+		host: process.env.RCON_HOST, port: process.env.RCON_PORT, password: process.env.RCON_PASSWORD
+	}).then((rcon) => {
+		console.log('RCON connected!')
+		rcon.send(`/say Chat-bot joined`)
+		return rcon
+    })
 
 	client.on(Events.MessageCreate, message => {
 		if(message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot){
 			const sender = message.author.globalName
 			const content = message.content.replace(/\\/g, '').replace(/"/g, '\\"').replace(/(\r\n|\n|\r)/gm, ' ')
-			container.exec({Cmd: [`rcon-cli`, `/tellraw @a [{"text": "<${sender}> ${content}"}]`]}, (err, exec) => {
-				exec.start()
-			})
+			rcon.send(`/tellraw @a [{"text": "<${sender}> ${content}"}]`)
 		}
 	})
 }
-main()
+main().then(() => {
+	console.log('Main ready!')
+}).catch(error => {
+	console.error('Shutdown with an error', error)
+})

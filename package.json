@@ -10,9 +10,9 @@
   "author": "Kartul",
   "license": "ISC",
   "dependencies": {
+    "@logdna/tail-file": "^3.0.1",
     "discord.js": "^14.13.0",
-    "dockerode": "^4.0.0",
     "dotenv": "^16.3.1",
-    "tail-file": "^1.4.16"
+    "rcon-client": "^4.2.3"
   }
 }
