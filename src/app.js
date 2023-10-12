@@ -15,7 +15,6 @@ const readDockerLogs = () => {
     stream.on('data', (chunk) => {
       const logOutput = chunk.toString('utf8')
 			if(logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
-				console.log('matched', logOutput)
 				const message = logOutput.substring(logOutput.indexOf('>') + 1)
 				const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
 				const channel = client.channels.cache.get(process.env.DISCORD_CHANNEL_ID)
