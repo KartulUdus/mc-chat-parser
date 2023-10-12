@@ -6,15 +6,15 @@ const Rcon = require('rcon-client')
 let parseDocker = false
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
 
-const client = new Client({ 	
+const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
 
 const readDockerLogs = () => {
-	new TailFile('/latest.log', {encoding: 'utf8'}).on('data', (logOutput) => {
+	new TailFile('/latest.log', { encoding: 'utf8' }).on('data', (logOutput) => {
 		console.log('log entry:', logOutput)
-		if(logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
+		if (logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
 			const message = logOutput.substring(logOutput.indexOf('>') + 1)
 			const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
 			const channel = client.channels.cache.get(process.env.DISCORD_CHANNEL_ID)
@@ -23,9 +23,9 @@ const readDockerLogs = () => {
 					description: message,
 					author: {
 						name: user,
-						icon_url: `https://minotar.net/helm/${user}/150.png`
-					}
-				}]
+						icon_url: `https://minotar.net/helm/${user}/150.png`,
+					},
+				}],
 			})
 		}
 	})
@@ -53,15 +53,15 @@ const main = async () => {
 	await client.login(process.env.DISCORD_TOKEN)
 
 	const rcon = await Rcon.Rcon.connect({
-		host: process.env.RCON_HOST, port: process.env.RCON_PORT, password: process.env.RCON_PASSWORD
-	}).then((rcon) => {
+		host: process.env.RCON_HOST, port: process.env.RCON_PORT, password: process.env.RCON_PASSWORD,
+	}).then((rc) => {
 		console.log('RCON connected!')
-		rcon.send(`/say Chat-bot joined`)
-		return rcon
+		rc.send('/say Chat-bot joined')
+		return rc
     })
 
 	client.on(Events.MessageCreate, message => {
-		if(message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot){
+		if (message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot) {
 			const sender = message.author.globalName
 			const content = message.content.replace(/\\/g, '').replace(/"/g, '\\"').replace(/(\r\n|\n|\r)/gm, ' ')
 			rcon.send(`/tellraw @a [{"text": "<"}, {"text": "${sender}", "color":"${senderColor}"}, {"text": "> ${content}"}]`)

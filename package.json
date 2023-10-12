@@ -5,6 +5,7 @@
   "main": "./src/app.js",
   "scripts": {
     "start": "node ./src/app.js",
+    "lint": "./node_modules/.bin/eslint ./src --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kartul",
@@ -14,5 +15,8 @@
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "rcon-client": "^4.2.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.51.0"
   }
 }
