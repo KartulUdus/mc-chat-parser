@@ -22,7 +22,7 @@ services:
       game:
         condition: service_healthy
     volumes:
-      - ./data/logs/server.log:/latest.log:ro
+      - ./data/logs/latest.log:/latest.log:ro
     environment:
       - DISCORD_TOKEN=
       - DISCORD_CHANNEL_ID=

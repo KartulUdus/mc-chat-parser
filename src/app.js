@@ -3,11 +3,13 @@ const { Client, Events, Partials, GatewayIntentBits } = require('discord.js')
 const TailFile = require('@logdna/tail-file')
 const Rcon = require('rcon-client')
 
+let parseDocker = false
+const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
+
 const client = new Client({ 	
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
-let parseDocker = false
 
 const readDockerLogs = () => {
 	new TailFile('/latest.log', {encoding: 'utf8'}).on('data', (logOutput) => {
@@ -62,7 +64,7 @@ const main = async () => {
 		if(message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot){
 			const sender = message.author.globalName
 			const content = message.content.replace(/\\/g, '').replace(/"/g, '\\"').replace(/(\r\n|\n|\r)/gm, ' ')
-			rcon.send(`/tellraw @a [{"text": "<${sender}> ${content}"}]`)
+			rcon.send(`/tellraw @a [{"text": "<"}, {"text": "${sender}", "color":"${senderColor}"}, {"text": "> ${content}"}]`)
 		}
 	})
 }
