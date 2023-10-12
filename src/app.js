@@ -11,6 +11,7 @@ let parseDocker = false
 
 const readDockerLogs = () => {
 	new TailFile('/latest.log', {encoding: 'utf8'}).on('data', (logOutput) => {
+		console.log('log entry:', logOutput)
 		if(logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
 			const message = logOutput.substring(logOutput.indexOf('>') + 1)
 			const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
@@ -33,8 +34,11 @@ const readDockerLogs = () => {
     console.error('A TailFile stream error was likely encountered', err)
   })
   .start()
+  .then(() => {
+    console.log('Found the log file')
+  })
   .catch((err) => {
-    console.error('Cannot start.  Does the file exist?', err)
+    console.error('Cannot start. Does the file exist?', err)
   })
 }
 
@@ -66,4 +70,5 @@ main().then(() => {
 	console.log('Main ready!')
 }).catch(error => {
 	console.error('Shutdown with an error', error)
+	process.exit(1)
 })
