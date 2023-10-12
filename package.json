@@ -1,0 +1,17 @@
+{
+  "name": "mc-chat-parser",
+  "version": "1.0.0",
+  "description": "app that follows docker logs and passes chat messages between minecraft and discord",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kartul",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "dockerode": "^4.0.0",
+    "dotenv": "^16.3.1"
+  }
+}
