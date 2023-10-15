@@ -1,11 +1,12 @@
 require('dotenv').config()
-const { Client, Events, Partials, GatewayIntentBits } = require('discord.js')
+const { Client, Events, Partials, GatewayIntentBits, ActivityType } = require('discord.js')
 const TailFile = require('@logdna/tail-file')
 const Rcon = require('rcon-client')
 
 let parseDocker = false
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
 const logFile = process.env.LOG_FILE || 'latest.log'
+const activityName = process.env.ACTIVITY_NAME || 'Minecraft'
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -56,8 +57,41 @@ const main = async () => {
 	const rcon = await Rcon.Rcon.connect({
 		host: process.env.RCON_HOST, port: process.env.RCON_PORT, password: process.env.RCON_PASSWORD,
 	}).then((rc) => {
-		console.log('RCON connected!')
 		rc.send('/say Chat-bot joined')
+		const activityStart = Date.now()
+
+		setInterval(async () => {
+			const info = await rcon.send('list')
+			const online = info.match(/There are (\d+) of a max of (\d+) players online:(.*)/)
+			const current = parseInt(online[1])
+			const max = parseInt(online[2])
+			const players = (current > 0) ? `Players:${players}` : 'Everyone is offline'
+
+			client.user.setActivity({
+				name: activityName,
+				type: ActivityType.Playing,
+				state: 'Observing chat',
+				details: `Players ${players}`,
+				timestamp: {
+					start: activityStart,
+					end: Date.now() + 30000
+				},
+				party: {
+					size: [current, max]
+				}
+			})
+
+		}, 10000);
+
+		client.user.setPresence({
+			activities: [{
+				name: activityName,
+				type: ActivityType.Playing,
+			}],
+			status: 'online'
+		});
+
+		console.log('RCON connected!')
 		return rc
     })
 
