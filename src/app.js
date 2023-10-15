@@ -5,6 +5,7 @@ const Rcon = require('rcon-client')
 
 let parseDocker = false
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
+const logFile = process.env.LOG_FILE || 'latest.log'
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -12,7 +13,7 @@ const client = new Client({
 })
 
 const readDockerLogs = () => {
-	new TailFile('/latest.log', { encoding: 'utf8' }).on('data', (logOutput) => {
+	new TailFile(`/logs/${logFile}`, { encoding: 'utf8' }).on('data', (logOutput) => {
 		console.log('log entry:', logOutput)
 		if (logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
 			const message = logOutput.substring(logOutput.indexOf('>') + 1)
@@ -29,19 +30,19 @@ const readDockerLogs = () => {
 			})
 		}
 	})
-  .on('tail_error', (err) => {
-    console.error('TailFile had an error!', err)
-  })
-  .on('error', (err) => {
-    console.error('A TailFile stream error was likely encountered', err)
-  })
-  .start()
-  .then(() => {
-    console.log('Found the log file')
-  })
-  .catch((err) => {
-    console.error('Cannot start. Does the file exist?', err)
-  })
+	.on('tail_error', (err) => {
+		console.error('TailFile had an error!', err)
+	})
+	.on('error', (err) => {
+		console.error('A TailFile stream error was likely encountered', err)
+	})
+	.start()
+	.then(() => {
+		console.log('Found the log file')
+	})
+	.catch((err) => {
+		console.error('Cannot start. Does the file exist?', err)
+	})
 }
 
 const main = async () => {
