@@ -2,7 +2,7 @@
 # Build image
 
 ```sh
-docker build -t kartuludus/mc-chat-parser:latest .
+docker build -t kartuludus/minecraft-discord-chat-parser:latest .
 ```
 
 # Example usage via compose
@@ -17,16 +17,17 @@ services:
       - ENABLE_RCON=true
       - RCON_PASSWORD=
   chat-parser:
-    image: kartuludus/mc-chat-parser:latest
+    image: kartuludus/minecraft-discord-chat-parser:latest
     depends_on:
       game:
         condition: service_healthy
     volumes:
-      - ./data/logs/latest.log:/latest.log:ro
+      - ./data/logs:/logs:ro
     environment:
       - DISCORD_TOKEN=
       - DISCORD_CHANNEL_ID=
       - RCON_HOST=game
       - RCON_PORT=25575
       - RCON_PASSWORD=
+      - LOG_FILE=latest.log
 ```
