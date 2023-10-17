@@ -8,19 +8,20 @@ const webhookHandler = async (discordClient, content, username, channelID) => {
         if (hook.name === 'mc-chat-parser') webhookLink = hook.url
     })
 
-    if (!webhookLink){
-        const hook = await msg.channel.createWebhook('mc-chat-parser')
+    if (!webhookLink) {
+        const hook = await channel.createWebhook('mc-chat-parser')
         webhookLink = hook.url
     }
 
-    try{
+    try {
         await axios.post(webhookLink, {
             content: content,
             username: username,
             avatar_url: `https://minotar.net/helm/${username}/150.png`,
         })
-    } catch(e) {
-        console.error('Error while sending webhook', e)
+    }
+ catch (e) {
+       console.error('Error while sending webhook', e)
     }
 
 }
