@@ -74,7 +74,7 @@ const main = async () => {
 					},
 				})
 			}
- else {
+			else {
 				client.user.setStatus('online')
 				client.user.setActivity({
 					name: current < 2 ? online[3] : `${current} players`,
