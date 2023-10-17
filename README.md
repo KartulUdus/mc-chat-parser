@@ -30,5 +30,4 @@ services:
       - RCON_PORT=25575
       - RCON_PASSWORD=
       - LOG_FILE=latest.log
-      - ACTIVITY_NAME=Minecraft
 ```
