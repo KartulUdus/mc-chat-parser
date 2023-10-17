@@ -2,6 +2,7 @@ require('dotenv').config()
 const { Client, Events, Partials, GatewayIntentBits } = require('discord.js')
 const TailFile = require('@logdna/tail-file')
 const Rcon = require('rcon-client')
+const { webhookHandler } = require('./webhookSend.js')
 
 let parseDocker = false
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
@@ -13,21 +14,12 @@ const client = new Client({
 })
 
 const readDockerLogs = () => {
-	new TailFile(`/logs/${logFile}`, { encoding: 'utf8' }).on('data', (logOutput) => {
+	new TailFile(`/logs/${logFile}`, { encoding: 'utf8' }).on('data', async (logOutput) => {
 		console.log('log entry:', logOutput)
 		if (logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
 			const message = logOutput.substring(logOutput.indexOf('>') + 1)
 			const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
-			const channel = client.channels.cache.get(process.env.DISCORD_CHANNEL_ID)
-			channel.send({
-				embeds: [{
-					description: message,
-					author: {
-						name: user,
-						icon_url: `https://minotar.net/helm/${user}/150.png`,
-					},
-				}],
-			})
+			await webhookHandler(client, message, user, process.env.DISCORD_CHANNEL_ID)
 		}
 	})
 	.on('tail_error', (err) => {
