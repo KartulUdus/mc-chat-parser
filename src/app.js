@@ -54,7 +54,7 @@ const main = async () => {
     })
 
 	client.on(Events.MessageCreate, message => {
-		if (message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot) {
+		if (message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot && !message.webhookId) {
 			const sender = message.author.globalName
 			const content = message.content.replace(/\\/g, '').replace(/"/g, '\\"').replace(/(\r\n|\n|\r)/gm, ' ')
 			rcon.send(`/tellraw @a [{"text": "<"}, {"text": "${sender}", "color":"${senderColor}"}, {"text": "> ${content}"}]`)

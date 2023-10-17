@@ -9,7 +9,7 @@ const webhookHandler = async (discordClient, content, username, channelID) => {
     })
 
     if (!webhookLink) {
-        const hook = await channel.createWebhook('mc-chat-parser')
+        const hook = await channel.createWebhook({ name: 'mc-chat-parser' })
         webhookLink = hook.url
     }
 
