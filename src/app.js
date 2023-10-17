@@ -75,13 +75,14 @@ const main = async () => {
 					state: 'Waiting for players',
 					timestamp: {
 						start: activityStart,
-						end: Date.now() + 11000
+						end: Date.now() + 11000,
 					},
 					party: {
-						size: [current, max]
-					}
+						size: [current, max],
+					},
 				})
-			} else {
+			}
+ else {
 				client.user.setStatus('online')
 				client.user.setActivity({
 					name: current < 2 ? online[3] : `${current} players`,
@@ -90,11 +91,11 @@ const main = async () => {
 					state: `Watching ${online[3]}`,
 					timestamp: {
 						start: activityStart,
-						end: Date.now() + 11000
+						end: Date.now() + 11000,
 					},
 					party: {
-						size: [current, max]
-					}
+						size: [current, max],
+					},
 				})
 			}
 		}, 10000)
