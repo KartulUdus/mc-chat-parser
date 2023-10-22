@@ -26,8 +26,10 @@ services:
     environment:
       - DISCORD_TOKEN=
       - DISCORD_CHANNEL_ID=
+      - WEBHOOK_NAME=
+      - RCON_PASSWORD=
       - RCON_HOST=game
       - RCON_PORT=25575
-      - RCON_PASSWORD=
-      - LOG_FILE=latest.log
+      - LOG_FILE=/logs/latest.log
+      - TIMESTAMP_PATTERN=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
 ```

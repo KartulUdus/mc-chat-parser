@@ -5,7 +5,10 @@ const Rcon = require('rcon-client')
 const { webhook } = require('./discordWebhook.js')
 const { reader } = require('./logReader.js')
 
+const webhookName = process.env.WEBHOOK_NAME
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
+const logFile = process.env.LOG_FILE || '/logs/latest.log'
+const timestampPattern = process.env.TIMESTAMP_PATTERN || '\\d{2}:\\d{2}:\\d{2}'
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -19,10 +22,11 @@ reader.register('\\[Server thread\\/INFO]: <', async (logOutput) => {
 })
 
 const main = async () => {
-	reader.start()
+	reader.start(logFile, timestampPattern)
 
 	client.once(Events.ClientReady, c => {
 		console.log(`Ready! Logged in as ${c.user.tag}`)
+		webhook.name = webhookName
 		webhook.enabled = true
 	})
 	await client.login(process.env.DISCORD_TOKEN)

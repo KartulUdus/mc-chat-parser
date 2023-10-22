@@ -2,8 +2,9 @@ const axios = require('axios')
 
 const webhook = {
     enabled: false,
+    name: undefined,
     send: async (discordClient, content, username, channelID) => {
-        if (!this.enabled) {
+        if (!webhook.enabled || !webhook.name) {
             return
         }
 
@@ -12,13 +13,13 @@ const webhook = {
         const channel = discordClient.channels.cache.get(channelID)
         const hooks = await channel.fetchWebhooks()
         hooks.forEach((hook) => {
-            if (hook.name === 'mc-chat-parser') {
+            if (hook.name === webhook.name) {
                 webhookLink = hook.url
             }
         })
 
         if (!webhookLink) {
-            const hook = await channel.createWebhook({ name: 'mc-chat-parser' })
+            const hook = await channel.createWebhook({ name: webhook.name })
             webhookLink = hook.url
         }
 
