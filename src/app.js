@@ -12,7 +12,7 @@ const client = new Client({
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
 
-reader.register(/\[Server thread\/INFO]: </, async (logOutput) => {
+reader.register('\\[Server thread\\/INFO]: <', async (logOutput) => {
 	const message = logOutput.substring(logOutput.indexOf('>') + 1)
 	const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
 	await webhook.send(client, message, user, process.env.DISCORD_CHANNEL_ID)

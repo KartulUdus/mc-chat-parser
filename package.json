@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "app that follows docker logs and passes chat messages between minecraft and discord",
   "main": "./src/app.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "node ./src/app.js",
     "lint": "./node_modules/.bin/eslint ./src --fix",
