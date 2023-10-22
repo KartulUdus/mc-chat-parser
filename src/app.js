@@ -83,7 +83,7 @@ const main = async () => {
 
 		console.log('RCON connected!')
 		return rc
-    })
+	})
 
 	client.on(Events.MessageCreate, message => {
 		if (message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot && !message.webhookId) {
