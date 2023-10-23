@@ -5,7 +5,7 @@ const Rcon = require('rcon-client')
 const { webhook } = require('./discordWebhook.js')
 const { reader } = require('./logReader.js')
 
-const webhookName = process.env.WEBHOOK_NAME
+const webhookName = process.env.WEBHOOK_NAME || 'mc-chat-parser'
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
 const logFile = process.env.LOG_FILE || '/logs/latest.log'
 const timestampPattern = process.env.TIMESTAMP_PATTERN || '\\d{2}:\\d{2}:\\d{2}'

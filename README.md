@@ -26,7 +26,7 @@ services:
     environment:
       - DISCORD_TOKEN=
       - DISCORD_CHANNEL_ID=
-      - WEBHOOK_NAME=
+      - WEBHOOK_NAME=mc-chat-parser
       - RCON_PASSWORD=
       - RCON_HOST=game
       - RCON_PORT=25575
