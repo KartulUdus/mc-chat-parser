@@ -1,47 +1,33 @@
 require('dotenv').config()
-const { Client, Events, Partials, GatewayIntentBits, ActivityType } = require('discord.js')
-const TailFile = require('@logdna/tail-file')
-const Rcon = require('rcon-client')
-const { webhookHandler } = require('./webhookSend.js')
 
-let parseDocker = false
+const { Client, Events, Partials, GatewayIntentBits, ActivityType } = require('discord.js')
+const Rcon = require('rcon-client')
+const { webhook } = require('./discordWebhook.js')
+const { reader } = require('./logReader.js')
+
+const webhookName = process.env.WEBHOOK_NAME || 'mc-chat-parser'
 const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
-const logFile = process.env.LOG_FILE || 'latest.log'
+const logFile = process.env.LOG_FILE || '/logs/latest.log'
+const timestampPattern = process.env.TIMESTAMP_PATTERN || '\\d{2}:\\d{2}:\\d{2}'
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
 
-const readDockerLogs = () => {
-	new TailFile(`/logs/${logFile}`, { encoding: 'utf8' }).on('data', async (logOutput) => {
-		console.log('log entry:', logOutput)
-		if (logOutput.match(/\[Server thread\/INFO]: </) && parseDocker) {
-			const message = logOutput.substring(logOutput.indexOf('>') + 1)
-			const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
-			await webhookHandler(client, message, user, process.env.DISCORD_CHANNEL_ID)
-		}
-	})
-	.on('tail_error', (err) => {
-		console.error('TailFile had an error!', err)
-	})
-	.on('error', (err) => {
-		console.error('A TailFile stream error was likely encountered', err)
-	})
-	.start()
-	.then(() => {
-		console.log('Found the log file')
-	})
-	.catch((err) => {
-		console.error('Cannot start. Does the file exist?', err)
-	})
-}
+reader.register('\\[Server thread\\/INFO]: <', async (logOutput) => {
+	const message = logOutput.substring(logOutput.indexOf('>') + 1)
+	const user = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
+	await webhook.send(client, message, user, process.env.DISCORD_CHANNEL_ID)
+})
 
 const main = async () => {
-	readDockerLogs(client)
+	reader.start(logFile, timestampPattern)
+
 	client.once(Events.ClientReady, c => {
 		console.log(`Ready! Logged in as ${c.user.tag}`)
-		parseDocker = true
+		webhook.name = webhookName
+		webhook.enabled = true
 	})
 	await client.login(process.env.DISCORD_TOKEN)
 
@@ -97,7 +83,7 @@ const main = async () => {
 
 		console.log('RCON connected!')
 		return rc
-    })
+	})
 
 	client.on(Events.MessageCreate, message => {
 		if (message.channelId === process.env.DISCORD_CHANNEL_ID && !message.author.bot && !message.webhookId) {
@@ -107,6 +93,7 @@ const main = async () => {
 		}
 	})
 }
+
 main().then(() => {
 	console.log('Main ready!')
 }).catch(error => {
