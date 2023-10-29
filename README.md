@@ -18,6 +18,7 @@ services:
       - RCON_PASSWORD=
   chat-parser:
     image: kartuludus/minecraft-discord-chat-parser:latest
+    restart: on-failure:10
     depends_on:
       game:
         condition: service_healthy

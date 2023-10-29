@@ -39,6 +39,7 @@ const reader = {
 			})
 			.catch((err) => {
 				console.error('Cannot start. Does the file exist?', err)
+				throw err
 			})
 	},
 }
