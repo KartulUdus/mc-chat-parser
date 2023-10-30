@@ -1,7 +1,8 @@
 require('dotenv').config()
 
-const { Client, Events, Partials, GatewayIntentBits, ActivityType } = require('discord.js')
+const { Client, Events, Partials, GatewayIntentBits } = require('discord.js')
 const Rcon = require('rcon-client')
+const Presence = require('./presence')
 const { webhook } = require('./discordWebhook.js')
 const { reader } = require('./logReader.js')
 
@@ -39,43 +40,11 @@ const main = async () => {
 
 		setInterval(async () => {
 			const info = await rcon.send('list')
-			const online = info.match(/There are (\d+) of a max of (\d+) players online:(.*)/)
-			const current = parseInt(online[1])
-			const max = parseInt(online[2])
-			const afk = current < 1
-			client.user.setAFK(afk)
+			const presence = new Presence(info, activityStart)
 
-			if (afk) {
-				client.user.setStatus('idle')
-				client.user.setActivity({
-					name: 'Minecraft',
-					type: ActivityType.Custom,
-					state: 'Waiting for players',
-					timestamp: {
-						start: activityStart,
-						end: Date.now() + 11000,
-					},
-					party: {
-						size: [current, max],
-					},
-				})
-			}
-			else {
-				client.user.setStatus('online')
-				client.user.setActivity({
-					name: current < 2 ? online[3] : `${current} players`,
-					details: `${online[3]}`,
-					type: ActivityType.Watching,
-					state: `Watching ${online[3]}`,
-					timestamp: {
-						start: activityStart,
-						end: Date.now() + 11000,
-					},
-					party: {
-						size: [current, max],
-					},
-				})
-			}
+			client.user.setAFK(presence.afk)
+			client.user.setStatus(presence.status)
+			client.user.setActivity(presence.activity)
 		}, 10000)
 
 		client.user.setStatus('idle')
