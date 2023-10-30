@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node ./src/app.js",
-    "lint": "./node_modules/.bin/eslint ./src --fix",
+    "lint": "./node_modules/.bin/eslint --fix ./src ./test",
     "test": "node --test"
   },
   "author": "Kartul",

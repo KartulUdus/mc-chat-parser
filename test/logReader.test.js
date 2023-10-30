@@ -1,11 +1,11 @@
 const { describe, it, before } = require('node:test')
 const assert = require('node:assert')
 const { reader } = require('../src/logReader.js')
-const { EOL } = require('os');
+const { EOL } = require('os')
 
 describe('on data', () => {
 	before(() => {
-		reader.pattern = new RegExp(`^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} (.+)$`, 'gm');
+		reader.pattern = new RegExp('^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} (.+)$', 'gm')
 	})
 
 	it('should split data if multiple entries are found', async () => {
@@ -15,7 +15,7 @@ describe('on data', () => {
 			` and ignore this${EOL}` +
 			`2023-10-21 21:49:22 [ will match again${EOL}` +
 			` 2023-10-22 21:49:22 [Server thread/INFO]: but ignore this${EOL}`
-		let actual = []
+		const actual = []
 
 		reader.register('.', (logOutput) => {
 			actual.push(logOutput)
@@ -24,10 +24,10 @@ describe('on data', () => {
 		await reader.onData(message)
 
 		assert.deepEqual(actual, [
-			`2023-10-20 21:49:22 [Server thread/INFO]: will match`,
-			`2023-10-21 21:49:22 [ will match again`
+			'2023-10-20 21:49:22 [Server thread/INFO]: will match',
+			'2023-10-21 21:49:22 [ will match again',
 		])
-	});
+	})
 
 	it('should pass entry to all matching callbacks', async () => {
 		const message = '2023-10-20 21:49:22 [Server thread/INFO]: <Socrates2100> test content'
@@ -50,5 +50,5 @@ describe('on data', () => {
 		await reader.onData(message)
 
 		assert.strictEqual(2, calls)
-	});
-});
+	})
+})
