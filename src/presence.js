@@ -1,11 +1,7 @@
 const { ActivityType } = require('discord.js')
 
 class Presence {
-	constructor(info, activityStart) {
-		const online = info.match(/There are (\d+) of a max of (\d+) players online:(.*)/)
-		const current = parseInt(online[1])
-		const max = parseInt(online[2])
-
+	constructor({ current, max, names }, activityStart) {
 		this.afk = current < 1
 
 		if (this.afk) {
@@ -26,10 +22,10 @@ class Presence {
 		else {
 			this.status = 'online'
 			this.activity = {
-				name: current < 2 ? online[3] : `${current} players`,
-				details: `${online[3]}`,
+				name: current < 2 ? names : `${current} players`,
+				details: names,
 				type: ActivityType.Watching,
-				state: `Watching ${online[3]}`,
+				state: `Watching ${names}`,
 				timestamp: {
 					start: activityStart,
 					end: Date.now() + 11000,
