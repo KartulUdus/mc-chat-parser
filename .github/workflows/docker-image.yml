@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/gh-docker-actions
 
 jobs:
   build-and-push:
