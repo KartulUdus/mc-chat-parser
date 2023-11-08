@@ -8,7 +8,7 @@ let discord: DiscordClient
 
 describe('integration', { skip: !(token && channelId && webhookName), timeout: timeout }, () => {
 	before(async () => {
-		discord = new DiscordClient(token, channelId, webhookName)
+		discord = new DiscordClient(token, channelId, webhookName, 60000)
 		await discord.initialize().catch(error => {
 			console.error(error)
 			assert.fail('Failed to initialize discord')

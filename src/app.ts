@@ -6,12 +6,12 @@ import { Rcon } from './service/rcon.js'
 import {
 	logFile, timestampPattern,
 	rconHost, rconPort, rconPassword, senderColor,
-	discordToken, channelId, webhookName,
+	discordToken, channelId, webhookName, loginTimeout,
 } from './config.js'
 
 const reader = new LogReader(logFile, timestampPattern)
 const rcon = new Rcon(rconHost, rconPort, rconPassword, senderColor)
-const discord = new DiscordClient(discordToken, channelId, webhookName)
+const discord = new DiscordClient(discordToken, channelId, webhookName, loginTimeout)
 
 const services = [reader, rcon, discord]
 

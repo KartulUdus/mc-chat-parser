@@ -25,17 +25,18 @@ function getChannel(client: Client, channelId: string): SupportsWebhooks | null 
 
 export class DiscordClient {
 
-	private readonly loginTimeout: number = 30000
+	private readonly token: string
 	private readonly channelId: string
 	private readonly webhookName: string
-	private readonly token: string
+	private readonly loginTimeout: number
 	private webhookLink: string = ''
 	private client: Client
 
-	constructor(token: string, channelId: string, webhookName: string) {
+	constructor(token: string, channelId: string, webhookName: string, loginTimeout: number) {
 		this.token = token
 		this.channelId = channelId
 		this.webhookName = webhookName
+		this.loginTimeout = loginTimeout
 
 		this.client = new Client({
 			intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],

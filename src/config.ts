@@ -13,3 +13,4 @@ export const senderColor = process.env.SENDER_COLOR || '#2CBAA8'
 export const discordToken = process.env.DISCORD_TOKEN || ''
 export const channelId = process.env.DISCORD_CHANNEL_ID || ''
 export const webhookName = process.env.WEBHOOK_NAME || 'mc-chat-parser'
+export const loginTimeout = parseInt(process.env.DISCORD_LOGIN_TIMEOUT || '60000')
