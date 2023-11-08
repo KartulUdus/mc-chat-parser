@@ -1,6 +1,6 @@
 {
   "name": "mc-chat-parser",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "app that follows docker logs and passes chat messages between minecraft and discord",
   "main": "src/app.ts",
   "type": "module",
