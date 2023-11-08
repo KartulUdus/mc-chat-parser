@@ -50,16 +50,30 @@ const main = async () => {
 	})
 }
 
-process.on('uncaughtException', async (error) => {
-	console.error('Uncaught Exception:', error)
-
+const terminateServices = async () => {
 	for (const service of services) {
 		console.debug(`Terminating ${service.constructor.name}`)
 		await service.terminate().catch(e => {
 			console.error(`Failed to terminate ${service.constructor.name}`, e)
 		})
 	}
+}
 
+process.on('SIGTERM', async () => {
+	console.log('Received SIGTERM signal. Gracefully shutting down...')
+	await terminateServices()
+	process.exit(0)
+})
+
+process.on('SIGINT', async () => {
+	console.log('Received SIGINT signal. Gracefully shutting down...')
+	await terminateServices()
+	process.exit(0)
+})
+
+process.on('uncaughtException', async (error) => {
+	console.error('Uncaught Exception. Exiting...', error)
+	await terminateServices()
 	process.exit(1)
 })
 
