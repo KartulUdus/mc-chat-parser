@@ -1,13 +1,13 @@
-const Presence = require('./presence')
-const LogReader = require('./service/logReader')
-const DiscordClient = require('./service/discordClient')
-const Rcon = require('./service/rcon')
+import { Presence } from './presence.js'
+import { LogReader } from './service/logReader.js'
+import { DiscordClient } from './service/discordClient.js'
+import { Rcon } from './service/rcon.js'
 
-const {
+import {
 	logFile, timestampPattern,
 	rconHost, rconPort, rconPassword, senderColor,
 	discordToken, channelId, webhookName,
-} = require('./config')
+} from './config.js'
 
 const reader = new LogReader(logFile, timestampPattern)
 const rcon = new Rcon(rconHost, rconPort, rconPassword, senderColor)
@@ -30,14 +30,22 @@ const main = async () => {
 	}, 10000)
 
 	reader.register('\\[Server thread\\/INFO]: <', logOutput => {
-		const sender = logOutput.match(/<\w+>/)[0].replace(/[<>]/g, '')
+		const matches = logOutput.match(/<\w+>/)
+		if (!matches) {
+			return
+		}
+		const sender = matches[0].replace(/[<>]/g, '')
 		const content = logOutput.substring(logOutput.indexOf('>') + 1)
 		discord.send(sender, content)
 	})
 
 	discord.onMessage(message => {
-		const sender = message.author.globalName
-		const content = message.content.replace(/\\/g, '').replace(/"/g, '\\"').replace(/(\r\n|\n|\r)/gm, ' ')
+		const sender = message.author.displayName
+		const content = message.content
+			.replace(/\\/g, '')
+			.replace(/"/g, '\\"')
+			.replace(/(\r\n|\n|\r)/gm, ' ')
+
 		rcon.send(sender, content)
 	})
 }

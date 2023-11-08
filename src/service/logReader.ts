@@ -1,7 +1,19 @@
-const TailFile = require('@logdna/tail-file')
+import TailFile from '@logdna/tail-file'
 
-class LogReader {
-	constructor(logFile, timestampPattern) {
+interface LogCallback {
+	(entry: string): void;
+}
+
+export class LogReader {
+
+	private readonly logFile: string
+	private readonly callbacks: { [key: string]: LogCallback }
+	private readonly pattern: RegExp
+	private initialized: boolean
+	private timestampPattern: string
+	private tailFile: TailFile
+
+	constructor(logFile: string, timestampPattern: string) {
 		this.logFile = logFile
 		this.callbacks = {}
 		this.timestampPattern = timestampPattern
@@ -9,7 +21,7 @@ class LogReader {
 		this.initialized = false
 
 		this.tailFile = new TailFile(this.logFile, { encoding: 'utf8' })
-			.on('data', (logOutput) => this.onData(logOutput))
+			.on('data', (logOutput: string) => this.onData(logOutput))
 			.on('tail_error', (error) => {
 				console.error('TailFile had an error!', error)
 			})
@@ -42,7 +54,7 @@ class LogReader {
 		return this.tailFile.quit()
 	}
 
-	onData(logOutput) {
+	onData(logOutput: string) {
 		console.debug('Log entry:', logOutput)
 		const logEntries = logOutput.match(this.pattern)
 		if (!logEntries) {
@@ -58,9 +70,7 @@ class LogReader {
 		}
 	}
 
-	register(pattern, callback) {
+	register(pattern: string, callback: LogCallback) {
 		this.callbacks[pattern] = callback
 	}
 }
-
-module.exports = LogReader

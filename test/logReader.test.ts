@@ -1,16 +1,19 @@
-const { describe, it, before, after } = require('node:test')
-const assert = require('node:assert')
-const LogReader = require('../src/service/logReader.js')
-const { EOL, tmpdir } = require('os')
-const { join } = require('path')
-const { mkdtemp, unlink, rmdir, appendFile } = require('node:fs/promises')
+import { after, before, describe, it } from 'node:test'
+import { EOL, tmpdir } from 'os'
+import { join } from 'path'
+import { URL } from 'url'
+import { appendFile, mkdtemp, rmdir, unlink } from 'node:fs/promises'
+import { PathLike } from 'fs'
+import * as assert from 'node:assert'
+import { LogReader } from '../src/service/logReader.js'
 
-let reader
+import { timeout } from './config.js'
+let reader: LogReader
 
-describe('on data', () => {
+describe('on data', { timeout: timeout }, () => {
 	before(() => {
 		reader = new LogReader(
-			join(__dirname, '..', 'README.md'),
+			join(new URL('.', import.meta.url).pathname, '..', 'README.md'),
 			'\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}',
 		)
 	})
@@ -22,13 +25,13 @@ describe('on data', () => {
 			` and ignore this${EOL}` +
 			`2023-10-21 21:49:22 [ will match again${EOL}` +
 			` 2023-10-22 21:49:22 [Server thread/INFO]: but ignore this${EOL}`
-		const actual = []
+		const actual: string[] = []
 
 		reader.register('.', (logOutput) => {
 			actual.push(logOutput)
 		})
 
-		await reader.onData(message)
+		reader.onData(message)
 
 		assert.deepEqual(actual, [
 			'2023-10-20 21:49:22 [Server thread/INFO]: will match',
@@ -54,15 +57,15 @@ describe('on data', () => {
 			assert.fail('Should not be called')
 		})
 
-		await reader.onData(message)
+		reader.onData(message)
 
 		assert.strictEqual(2, calls)
 	})
 })
 
-describe('on start follow file', () => {
-	let tempPath
-	let tempFile
+describe('on start follow file', { timeout: timeout }, () => {
+	let tempPath: PathLike
+	let tempFile: PathLike
 
 	before(async () => {
 		tempPath = await mkdtemp(join(tmpdir(), 'temp-'))
@@ -81,7 +84,7 @@ describe('on start follow file', () => {
 	})
 
 	it('Should pass new entries to callback when written to file', async () => {
-		const actual = []
+		const actual: string[] = []
 
 		await appendFile(tempFile, `2023-10-20 21:49:22 [Server thread/INFO]: this is too soon${EOL}`)
 

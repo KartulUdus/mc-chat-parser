@@ -1,15 +1,11 @@
-const { describe, it, before, after } = require('node:test')
-const assert = require('node:assert')
-const Rcon = require('../src/service/rcon')
-const { join } = require('path')
+import { after, before, describe, it } from 'node:test'
+import * as assert from 'node:assert'
+import { Rcon } from '../src/service/rcon.js'
 
-require('dotenv').config({ path: join(__dirname, '.env') })
-const host = process.env.RCON_HOST
-const port = process.env.RCON_PORT
-const pass = process.env.RCON_PASSWORD
-let rcon = null
+import { timeout, host, port, pass } from './config.js'
+let rcon: Rcon
 
-describe('integration', { skip: !(host && port && pass) }, () => {
+describe('integration', { skip: !(host && port && pass), timeout: timeout }, () => {
 	before(async () => {
 		rcon = new Rcon(host, port, pass, '#2CBAA8')
 		await rcon.initialize()

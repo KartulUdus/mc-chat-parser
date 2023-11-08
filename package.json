@@ -2,12 +2,14 @@
   "name": "mc-chat-parser",
   "version": "1.0.1",
   "description": "app that follows docker logs and passes chat messages between minecraft and discord",
-  "main": "./src/app.js",
-  "type": "commonjs",
+  "main": "src/app.ts",
+  "type": "module",
   "scripts": {
-    "start": "node ./src/app.js",
-    "lint": "./node_modules/.bin/eslint --fix ./src ./test",
-    "test": "node --test"
+    "start": "node dist/app.js",
+    "dev": "npx ts-node app.ts",
+    "build": "tsc --build --clean && tsc",
+    "lint": "./node_modules/.bin/eslint ./src ./test --fix --ext .ts",
+    "test": "node --import tsx --test test/**.test.ts"
   },
   "author": "Kartul",
   "license": "ISC",
@@ -19,6 +21,11 @@
     "rcon-client": "^4.2.3"
   },
   "devDependencies": {
-    "eslint": "^8.51.0"
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "eslint": "^8.53.0",
+    "ts-node": "^10.9.1",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
   }
 }
