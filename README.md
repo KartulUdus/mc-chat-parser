@@ -9,7 +9,7 @@ allowing to pass messages between the two.
     ```
     <username> message content
     ```
-  - Username of the Discord user sending the message (not the bot) is used.
+  - The username of the Discord user sending the message (not the bot) is used.
   - Color is added to the `<username>` to help distinguish it from
       other in-game chat (defaults to teal).
   - The message content supports [some emojis](https://gist.github.com/tomasdev/92bde758ee8e65fa826717b24cfd0463),
@@ -22,7 +22,7 @@ allowing to pass messages between the two.
     ```
     - Player username is used as the sender
     - The display image 📷 is replaced with the head of the player avatar using
-      the https://minotar.net/ api together with the player username, for example:
+      the https://minotar.net/ API together with the player username, for example:
 
      ![head for username](https://minotar.net/helm/username/150.png)
     - Username and timestamp format defaults to what Discord uses, the `[BOT]` label is added by Discord automatically.
@@ -55,16 +55,16 @@ The bot requires [RCON access](https://wiki.vg/RCON) to a Minecraft server insta
 and to get the list of online players, and read access to the Minecraft log file to read the in-game chat messages.
 
 An [example compose file](./compose.example.yml) is included with the project to show how to run the bot together with
-a Minecraft server instance that is leveraging the https://github.com/itzg/docker-minecraft-server docker image. Just 
-fill in the empty env variables and run `docker compose up -d`.
+a Minecraft server instance that is leveraging the https://github.com/itzg/docker-minecraft-server docker image.
+Fill in the empty env variables and run `docker compose up -d`.
 
-Alternatively the bot can also be executed as a stand-alone Node.js application running on the same server where your
+Alternatively, the bot can also be executed as a stand-alone Node.js application running on the same server where your
 Minecraft instance is located. Requires Node 18 or later to be present on the server.
 
 - clone this repo,
 - run `npm install`,
 - run `npm run build`,
-- create an `.env` file from `.env.example` and fill in the config variables in that file,
+- create a `.env` file from `.env.example` and fill in the config variables in that file,
 - and run `node dist/app.js`
 
 ### Configuration
@@ -74,7 +74,7 @@ Minecraft instance is located. Requires Node 18 or later to be present on the se
 - **DISCORD_LOGIN_TIMEOUT** - Number of milliseconds the bot waits to establish the initial Discord session. Defaults to `60000`.
 - **WEBHOOK_NAME** - Pretty much an arbitrary name for the webhook. Defaults to `mc-chat-parser`.
 - **RCON_PASSWORD** - Password for the Minecraft server instance RCON connection.
-- **RCON_HOST** - Host name or IP for the RCON connection. Defaults to `localhost`.
+- **RCON_HOST** - Hostname or IP for the RCON connection. Defaults to `localhost`.
 - **RCON_PORT** - Port number for the RCON connection. Defaults to `25575`.
 - **SENDER_COLOR** - Color to display the `<username>` part in the in-game chat. Defaults to `#2CBAA8` (teal).
 - **LOG_FILE** - Path to the Minecraft server logs file. Defaults to `/logs/latest.log`
