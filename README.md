@@ -47,7 +47,7 @@ allowing to pass messages between the two.
 5. Visit the generated URL to invite the bot into your Discord channel.
 6. Copy the ID of a Discord text channel you want the bot to participate
    - enable Developer Mode (under **User Settings > Advanced**)
-   - right-click on the channel to see get the ID.
+   - right-click on the channel to get the ID.
 
 ### Chat application setup
 
