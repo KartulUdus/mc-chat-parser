@@ -1,7 +1,8 @@
 {
   "name": "mc-chat-parser",
-  "version": "1.3.0",
-  "description": "app that follows docker logs and passes chat messages between minecraft and discord",
+  "version": "1.3.1",
+  "description": "App that follows Minecraft logs and passes chat messages between Minecraft and Discord",
+  "keywords": ["minecraft", "discord", "chat"],
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
@@ -12,10 +13,24 @@
     "test": "node --import tsx --test test/**.test.ts"
   },
   "author": "Kartul",
+  "contributors": [
+    {
+      "name": "Jaak Kütt",
+      "email": "jaak.kytt@gmail.com",
+      "url": "https://jaak.kytt.ee/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KartulUdus/mc-chat-parser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KartulUdus/issues"
+  },
   "license": "ISC",
   "dependencies": {
     "@logdna/tail-file": "^3.0.1",
-    "axios": "^1.5.1",
+    "axios": "1.6.0",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
     "rcon-client": "^4.2.3"
