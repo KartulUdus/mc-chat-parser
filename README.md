@@ -91,7 +91,7 @@ Minecraft instance is located. Requires Node 18 or later to be present on the se
 
 ## Contribution
 
-1. Start by creating an issue https://github.com/KartulUdus/mc-chat-parser/issue.
+1. Start by creating an issue https://github.com/KartulUdus/mc-chat-parser/issues.
 2. Fork and modify.
 3. Add/update tests (sufficiently, a subjective measure).
 4. Make sure tests pass (`npm run test`).
